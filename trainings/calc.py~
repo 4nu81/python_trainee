@@ -26,7 +26,7 @@ class calc:
         if is_number(term):
             self._stack.append(term)
         else:
-            self._stack.append('{term}'.format(term=term))
+            self._stack.append('({term})'.format(term=term))
 
     def run(self):
         while True:

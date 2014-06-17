@@ -1,5 +1,4 @@
 import os, sys
-system = 'linux'
 
 def is_number(s):
     try:
@@ -8,6 +7,12 @@ def is_number(s):
         return False
     else:
         return True
+
+def is_valid(s):
+    for c in s:
+        if c in [1,2,3,4,5,6,7,8,9,0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,0.0]:
+            return False
+    return True
 
 class calc:
     def __init__(self, clear):
@@ -18,15 +23,19 @@ class calc:
         os.system(self.clear_term)
 
     def calc(self):
-        print ' '.join(self._stack)
-        return eval(' '.join(self._stack))
-        pass
+        try:
+            return eval(' '.join(self._stack))
+        except SyntaxError as e:
+            return 'SyntaxError'
+        except ZeroDivisionError as e:
+            return 'Zero Division Error'
 
     def proceed(self, term):
         if is_number(term):
             self._stack.append(term)
         else:
-            self._stack.append('{term}'.format(term=term))
+            if is_valid(term):
+                self._stack.append('{term}'.format(term=term))
 
     def run(self):
         while True:
@@ -41,6 +50,7 @@ class calc:
                 self.clear()
             elif term == '=':
                 self.clear()
+                print ''
                 print '{term} = {result}'.format(term=' '.join(self._stack), result=self.calc())
                 self._stack = []
                 print ''

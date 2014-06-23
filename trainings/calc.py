@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import os, sys, time
 from calc_model import calc_model as model
 
@@ -42,6 +44,7 @@ def welcome(s, clear):
         os.system(clear)
         print w
         time.sleep(0.001)
+    print help_text
     time.sleep(s)
 
 def is_number(s):
@@ -98,13 +101,14 @@ class Calculator:
         Calculates the term and returns the calculated value
         """
         try:
-            return eval(' '.join(self._stack))
+            return self._model.calc_term(self._stack)
+            #return eval(' '.join(self._stack))
         except SyntaxError:
             return 'SyntaxError'
         except ZeroDivisionError:
             return 'Zero Division Error'
-        except:
-            return 'Error'
+        except Exception as e:
+            return str(e)
 
     def proceed(self, item):
         """
@@ -153,8 +157,13 @@ class Calculator:
         prints the result of the entered term
         """
         self.clear()
-        self._res = self._model.calc_term(self._stack)
-        print '{term} = {green}{result}{cdefault}'.format(term=' '.join(self._stack), green=bcolors.RESULT, result=self._res, cdefault=bcolors.DEFAULT)
+        self._res = self.calc()
+        print '{term} = {green}{result}{cdefault}'.format(
+            term=' '.join(self._stack),
+            green=bcolors.RESULT,
+            result=self._res,
+            cdefault=bcolors.DEFAULT
+        )
         self._stack = []
         print ''
 
@@ -245,7 +254,6 @@ if __name__ == '__main__':
         clear = 'cls'
     else:
         clear = 'clear'
-    welcome(1, clear)
-    os.system(clear)
+    welcome(2, clear)
     c = Calculator(clear)
     sys.exit(c.run())

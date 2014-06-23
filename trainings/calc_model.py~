@@ -89,11 +89,28 @@ class sqrt_term(r_term):
     def value(self):
         return self.operator.value() ** 0.5
 
+################## The Calculations Model ##################
+
 class calc_model:
+    """
+    calc_model is the modelclass for the calculator.
+    It knows how to build the term-tree from the input-stack
+    and defines the valid operators. Here happens all the magic.
+
+    Here additional functions can be added and included in the programs logic
+    without altering the view.
+    """
 
     _valid_operators = ['+','-','/','*','**','sqrt']
 
     def calc_term(self,terms):
+        """
+        Returns the result build up from the term-stack
+        
+        @Param terms: This param needs a list with the input to the calculator.
+        example: ['2','*','10','**','5','+','sqrt','9']
+        result : 200003.0
+        """
         term = self.parse_term(terms)
         return term.value()
 

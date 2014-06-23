@@ -1,0 +1,132 @@
+
+class term:
+    """
+    Term base class
+    """
+    def value(self):
+        raise Exception('You called an abstract method','Please inherid from term to implement your own version')
+
+class val_term(term):
+    """
+    This class represents an value/operand for other operations
+    """
+    def __init__(self, val):
+        """
+        constructor
+        
+        @param val: value to be saved in
+        """
+        self.val = float(val)
+
+    def value(self):
+        """
+        returns the value represended by the object
+        """
+        return self.val
+
+class lr_term(term):
+    """
+    This is a base class for all operations with two operators
+    """
+    def __init__(self, left, right):
+        """
+        constructor
+        @param left: the left operator
+        @param right: the right operator
+        """
+        if isinstance(left, term) and isinstance(right, term):
+            self.left = left
+            self.right = right
+        else:
+            raise Exception('Invalid Argument', '')
+
+class add_term(lr_term):
+    def value(self):
+        """
+        Add the left to the right term
+        """
+        return self.left.value() + self.right.value()
+
+class sub_term(lr_term):
+    def value(self):
+        """
+        returns value of the left minus the right
+        """
+        return self.left.value() - self.right.value()
+
+class multi_term(lr_term):
+    def value(self):
+        """
+        returns value of the left term times the right
+        """
+        return self.left.value() * self.right.value()
+
+class div_term(lr_term):
+    def value(self):
+        """
+        returns the value of the left term divided by the right
+        """
+        return self.left.value() / self.right.value()
+
+class exp_term(lr_term):
+    def value(self):
+        """
+        returns the value of the left term exponent the right
+        """
+        return self.left.value() ** self.right.value()
+
+class r_term(term):
+    """
+    This is a base class for all operations only using one operator
+    """
+    def __init__(self, operator):
+        if isinstance(operator, term):
+            self.operator = operator
+        else:
+            raise Exception('Invalid Argument', '')
+
+class sqrt_term(r_term):
+    def value(self):
+        return self.operator.value() ** 0.5
+
+class calc_model:
+
+    _valid_operators = ['+','-','/','*','**','sqrt']
+
+    def calc_term(self,terms):
+        term = self.parse_term(terms)
+        return term.value()
+
+    def parse_term(self,terms):
+        if len(terms) == 1:
+            return val_term(terms[0])
+        elif '+' in terms:
+            i = terms.index('+')
+            left = self.parse_term(terms[:i])
+            right = self.parse_term(terms[i+1:])
+            return add_term(left, right)
+        elif '-' in terms:
+            i = terms.index('-')
+            left = self.parse_term(terms[:i])
+            right = self.parse_term(terms[i+1:])
+            return sub_term(left, right)
+        elif '*' in terms:
+            i = terms.index('*')
+            left = self.parse_term(terms[:i])
+            right = self.parse_term(terms[i+1:])
+            return multi_term(left, right)
+        elif '/' in terms:
+            i = terms.index('/')
+            left = self.parse_term(terms[:i])
+            right = self.parse_term(terms[i+1:])
+            return div_term(left, right)
+        elif '**' in terms:
+            i = terms.index('**')
+            left = self.parse_term(terms[:i])
+            right = self.parse_term(terms[i+1:])
+            return exp_term(left, right)
+        elif len(terms) > 2:
+            raise Exception('Invalid Syntax')
+        elif 'sqrt' == terms[0]:
+            operand = self.parse_term(terms[1])
+            return sqrt_term(operand)

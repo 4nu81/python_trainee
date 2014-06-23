@@ -1,0 +1,11 @@
+
+dictionaire = [1,2,'+',4,'+','*',6]
+
+i = dictionaire.index('+')
+
+left = dictionaire[:i]
+right = dictionaire[i:]
+
+print dictionaire
+print left
+print right

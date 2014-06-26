@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import os, sys, time
-from calc_model import calc_model as model
+from calc_model2 import calc_model as model
 
 _no_mem_values = ['save', 'exit', 'help', 'clear', 'del', 'res']
 

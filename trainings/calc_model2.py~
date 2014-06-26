@@ -1,3 +1,5 @@
+import math
+
 
 class term:
     """
@@ -89,6 +91,31 @@ class sqrt_term(r_term):
     def value(self):
         return self.operand.value() ** 0.5
 
+class sin_term(r_term):
+    def value(self):
+        print self.operand.value()
+        return math.sin(self.operand.value())
+
+class asin_term(r_term):
+    def value(self):
+        return math.asin(self.operand.value())
+
+class cos_term(r_term):
+    def value(self):
+        return math.cos(self.operand.value())
+
+class acos_term(r_term):
+    def value(self):
+        return math.acos(self.operand.value())
+
+class tan_term(r_term):
+    def value(self):
+        return math.tan(self.operand.value())
+
+class atan_term(r_term):
+    def value(self):
+        return math.atan(self.operand.value())
+
 ################## The Calculations Model ##################
 
 class calc_model:
@@ -101,7 +128,7 @@ class calc_model:
     without altering the view.
     """
 
-    _valid_operators = ['+','-','/','*','**','sqrt']
+    _valid_operators = ['+','-','/','*','**','sqrt','(',')','sin','cos','tan','asin','acos','atan']
 
     def calc_term(self,terms):
         """
@@ -114,41 +141,89 @@ class calc_model:
         term = self.parse_term(terms)
         return term.value()
 
+    def check_brackets(self,terms):
+        chk = 0
+        exist = False
+        for item in terms:
+            if item == '(':
+                chk += 1
+                exist = True
+            elif item == ')':
+                chk -= 1
+            if chk < 0:
+                raise Exception('Syntaxfehler','Oeffnende Klammer(n) nicht gefunden.')
+        if chk > 0:
+            raise Exception('Syntaxfehler','Schliessende Klammer(n) nicht gefunden.')
+        return exist
+
+    def find_closing(self, terms, start):
+        i = 0
+        c = 0
+        for i in range(len(terms)):
+            item = terms[i]
+            if item == '(':
+                c += 1
+            elif item == ')':
+                c -= 1
+                if c == 0:
+                    return i
+
+    def build_lr_term(self, char, terms, _class):
+        i = terms.index(char)
+        left = self.parse_term(terms[:i])
+        right = self.parse_term(terms[i+1:])
+        return _class(left, right)
+
+    def build_r_term(self, char, terms, _class):
+        i = terms.index(char)
+        operand = self.parse_term(terms[i+1:])
+        return _class(operand)
+
+    def solve_brackets(self, terms)
+        while self.check_brackets(terms):
+            start = terms.index('(')
+            end = self.find_closing(terms, start)
+            val = self.calc_term(terms[start+1:end])
+            new = terms[:start]
+            new.append(val)
+            new.extend(terms[end+1:])
+            terms = new
+        return terms
+
     def parse_term(self,terms):
         """
         Here the order of operations is beeing defined. Low priority has to be
         prior to high.
         e.g. to do multiplications after addition.
         """
+        # at first the brackets need to be solved
+        terms = self.solve_brackets(terms)
+        # if terms has only size 1 there must be a value
         if len(terms) == 1:
             return val_term(terms[0])
+        # Operartionen mit 2 Operatoren
         elif '+' in terms:
-            i = terms.index('+')
-            left = self.parse_term(terms[:i])
-            right = self.parse_term(terms[i+1:])
-            return add_term(left, right)
+            return self.build_lr_term('+', terms, add_term)
         elif '-' in terms:
-            i = terms.index('-')
-            left = self.parse_term(terms[:i])
-            right = self.parse_term(terms[i+1:])
-            return sub_term(left, right)
+            return self.build_lr_term('-', terms, sub_term)
         elif '*' in terms:
-            i = terms.index('*')
-            left = self.parse_term(terms[:i])
-            right = self.parse_term(terms[i+1:])
-            return multi_term(left, right)
+            return self.build_lr_term('*', terms, multi_term)
         elif '/' in terms:
-            i = terms.index('/')
-            left = self.parse_term(terms[:i])
-            right = self.parse_term(terms[i+1:])
-            return div_term(left, right)
+            return self.build_lr_term('/', terms, div_term)
         elif '**' in terms:
-            i = terms.index('**')
-            left = self.parse_term(terms[:i])
-            right = self.parse_term(terms[i+1:])
-            return exp_term(left, right)
-        elif len(terms) > 2:
-            raise Exception('Invalid Syntax')
-        elif 'sqrt' == terms[0]:
-            operand = self.parse_term(terms[1])
-            return sqrt_term(operand)
+            return self.build_lr_term('**', terms, exp_term)
+        # Operartionen mit 1 Operator
+        elif 'sqrt' in terms:
+            return self.build_r_term('sqrt', terms, sqrt_term)
+        elif 'sin' in terms:
+            return self.build_r_term('sin', terms, sin_term)
+        elif 'cos' in terms:
+            return self.build_r_term('cos', terms, cos_term)
+        elif 'tan' in terms:
+            return self.build_r_term('tan', terms, tan_term)
+        elif 'asin' in terms:
+            return self.build_r_term('asin', terms, asin_term)
+        elif 'acos' in terms:
+            return self.build_r_term('acos', terms, acos_term)
+        elif 'atan' in terms:
+            return self.build_r_term('atan', terms, atan_term)

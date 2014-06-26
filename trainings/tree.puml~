@@ -1,0 +1,24 @@
+@startuml
+
+title "val1 / val2 + val3 ** val4 * val5"
+
+object add
+object multi
+object exp
+object div
+object 1
+object 2
+object 3
+object 4
+object 5
+
+div -up-> add
+val1 -up-> div
+val2 -up-> div
+multi -up-> add
+val5 -up-> multi
+exp -up-> multi
+val3 -up-> exp
+val4 -up-> exp
+
+@enduml

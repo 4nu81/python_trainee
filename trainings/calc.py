@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import os, sys, time
-from calc_model import calc_model as model
+from calc_model2 import calc_model as model
 
 _no_mem_values = ['save', 'exit', 'help', 'clear', 'del', 'res']
 
@@ -254,6 +254,6 @@ if __name__ == '__main__':
         clear = 'cls'
     else:
         clear = 'clear'
-    welcome(2, clear)
+    welcome(0, clear)
     c = Calculator(clear)
     sys.exit(c.run())

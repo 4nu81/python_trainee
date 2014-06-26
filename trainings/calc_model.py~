@@ -79,15 +79,15 @@ class r_term(term):
     """
     This is a base class for all operations only using one operator
     """
-    def __init__(self, operator):
-        if isinstance(operator, term):
-            self.operator = operator
+    def __init__(self, operand):
+        if isinstance(operand, term):
+            self.operand = operand
         else:
             raise Exception('Invalid Argument', '')
 
 class sqrt_term(r_term):
     def value(self):
-        return self.operator.value() ** 0.5
+        return self.operand.value() ** 0.5
 
 ################## The Calculations Model ##################
 
@@ -115,6 +115,11 @@ class calc_model:
         return term.value()
 
     def parse_term(self,terms):
+        """
+        Here the order of operations is beeing defined. Low priority has to be
+        prior to high.
+        e.g. to do multiplications after addition.
+        """
         if len(terms) == 1:
             return val_term(terms[0])
         elif '+' in terms:

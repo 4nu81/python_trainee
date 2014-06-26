@@ -1,0 +1,92 @@
+@startuml
+package calc.py
+class Calculator{
+    __init__(clear)
+    clear()
+    calc()
+    proceed(item)
+    _clear()
+    _del()
+    _result()
+    _equals()
+    _help()
+    _add()
+    _memory(key)
+    _print_mem()
+    _save()
+    _run()
+    }
+class bcolors{
+    RESULT
+    DEFAULT
+    }
+class Main{
+    _no_mem_values
+    help_text
+    WELCOME
+    welcome(clear)
+    is_number(s)
+    is_valid_operator(s)
+    "if __name__ == '__main__':"()
+    }
+endpackage
+
+package calc_model.py
+class calc_model
+class term{
+    value() : abstract
+    }
+class val_term{
+    __init__(val)
+    value()
+    }
+class lr_term{
+    __init__(left,right)
+    }
+class r_term{
+    __init__(operand)
+    }
+class add_term{
+    value()
+    }
+class sub_term{
+    value()
+    }
+class multi_term{
+    value()
+    }
+class div_term{
+    value()
+    }
+class exp_term{
+    value()
+    }
+class sqrt_term{
+    value()
+    }
+endpackage
+
+calc.py .down.> calc_model.py : "import calc_model as model"
+
+val_term -down-|> term
+lr_term -down-|> term
+r_term -down-|> term
+add_term -down-|> lr_term
+sub_term -down-|> lr_term
+multi_term -down-|> lr_term
+div_term -down-|> lr_term
+exp_term -down-|> lr_term
+sqrt_term -down-|> r_term
+calc_model .....> val_term : "uses"
+calc_model .....> add_term : "uses"
+calc_model .....> sub_term : "uses"
+calc_model .....> multi_term : "uses"
+calc_model .....> div_term : "uses"
+calc_model .....> exp_term : "uses"
+calc_model .....> sqrt_term : "uses"
+
+Calculator ....> calc_model : "uses"
+Calculator .right.> bcolors : "uses"
+Main .right.> Calculator : "uses"
+
+@enduml

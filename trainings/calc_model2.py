@@ -1,12 +1,13 @@
-import math
+# -*- coding: utf-8 -*-
 
+import math
 
 class term:
     """
     Term base class
     """
     def value(self):
-        raise Exception('You called an abstract method','Please inherid from term to implement your own version')
+        raise Exception('You called an abstract method','You must inherid from term to implement your term_operation_class')
 
 class val_term(term):
     """
@@ -15,7 +16,6 @@ class val_term(term):
     def __init__(self, val):
         """
         constructor
-        
         @param val: value to be saved in
         """
         self.val = float(val)
@@ -30,12 +30,16 @@ class lr_term(term):
     """
     This is a base class for all operations with two operators
     """
-    def __init__(self, left, right):
+    def __init__(self, terms, calc_model_instance):
         """
         constructor
-        @param left: the left operator
-        @param right: the right operator
+        @param char: the character representing the term
+        @param terms: the terms_stack
+        @param calc_model_instance: instance of the calc_model class
         """
+        i = terms.index(self.char)
+        left = calc_model_instance.parse_term(terms[:i])
+        right = calc_model_instance.parse_term(terms[i+1:])
         if isinstance(left, term) and isinstance(right, term):
             self.left = left
             self.right = right
@@ -43,6 +47,7 @@ class lr_term(term):
             raise Exception('Invalid Argument', '')
 
 class add_term(lr_term):
+    char = '+'
     def value(self):
         """
         Add the left to the right term
@@ -50,6 +55,7 @@ class add_term(lr_term):
         return self.left.value() + self.right.value()
 
 class sub_term(lr_term):
+    char = '-'
     def value(self):
         """
         returns value of the left minus the right
@@ -57,6 +63,7 @@ class sub_term(lr_term):
         return self.left.value() - self.right.value()
 
 class multi_term(lr_term):
+    char = '*'
     def value(self):
         """
         returns value of the left term times the right
@@ -64,6 +71,7 @@ class multi_term(lr_term):
         return self.left.value() * self.right.value()
 
 class div_term(lr_term):
+    char = '/'
     def value(self):
         """
         returns the value of the left term divided by the right
@@ -71,6 +79,7 @@ class div_term(lr_term):
         return self.left.value() / self.right.value()
 
 class exp_term(lr_term):
+    char = '**'
     def value(self):
         """
         returns the value of the left term exponent the right
@@ -81,42 +90,98 @@ class r_term(term):
     """
     This is a base class for all operations only using one operator
     """
-    def __init__(self, operand):
+    def __init__(self, terms, calc_model_instance):
+        """
+        constructor
+        @param char: the character representing the term
+        @param terms: the terms_stack
+        @param calc_model_instance: instance of the calc_model class
+        """
+        i = terms.index(self.char)
+        operand = calc_model_instance.parse_term(terms[i+1:])
         if isinstance(operand, term):
             self.operand = operand
         else:
             raise Exception('Invalid Argument', '')
 
 class sqrt_term(r_term):
+    char = 'sqrt'
     def value(self):
         return self.operand.value() ** 0.5
 
 class sin_term(r_term):
+    char = 'sin'
     def value(self):
         print self.operand.value()
         return math.sin(self.operand.value())
 
 class asin_term(r_term):
+    char = 'asin'
     def value(self):
         return math.asin(self.operand.value())
 
 class cos_term(r_term):
+    char = 'cos'
     def value(self):
         return math.cos(self.operand.value())
 
 class acos_term(r_term):
+    char = 'acos'
     def value(self):
         return math.acos(self.operand.value())
 
 class tan_term(r_term):
+    char = 'tan'
     def value(self):
         return math.tan(self.operand.value())
 
 class atan_term(r_term):
+    char = 'atan'
     def value(self):
         return math.atan(self.operand.value())
 
+class log_term(r_term):
+    char = 'log'
+    def value(self):
+        return math.log(self.operand.value())
+
+class rad_term(r_term):
+    char = 'rad'
+    def value(self):
+        return math.radians(self.operand.value())
+
+class deg_term(r_term):
+    char = 'deg'
+    def value(self):
+        return math.degrees(self.operand.value())
+
 ################## The Calculations Model ##################
+
+# List is unfortunately necessary while dicts are not sorted
+# as they are written in source
+_valid_operators = ['(',')','+','-','/','*','**','sqrt','sin','cos','tan','asin','acos','atan','rad','deg','log']
+
+_valid_operators_d = {
+    # 'operational_char' : term_class,
+    '(': None,
+    ')': None,
+    '+': add_term,
+    '-': sub_term,
+    '/': div_term,
+    '*': multi_term,
+    '**': exp_term,
+
+    'sqrt': sqrt_term,
+    'sin': sin_term,
+    'cos': cos_term,
+    'tan': tan_term,
+    'asin': asin_term,
+    'acos': acos_term,
+    'atan': atan_term,
+    'rad': rad_term,
+    'deg': deg_term,
+    'log': log_term,
+}
 
 class calc_model:
     """
@@ -127,8 +192,6 @@ class calc_model:
     Here additional functions can be added and included in the programs logic
     without altering the view.
     """
-
-    _valid_operators = ['+','-','/','*','**','sqrt','(',')','sin','cos','tan','asin','acos','atan']
 
     def calc_term(self,terms):
         """
@@ -141,7 +204,12 @@ class calc_model:
         term = self.parse_term(terms)
         return term.value()
 
-    def check_brackets(self,terms):
+    def _check_brackets(self,terms):
+        """
+        Checks for brackets in 'terms' and tests if there are missing opening or closing ones.
+        returns False if no brackets are found
+        returns True if brackets are found 
+        """
         chk = 0
         exist = False
         for item in terms:
@@ -151,14 +219,13 @@ class calc_model:
             elif item == ')':
                 chk -= 1
             if chk < 0:
-                raise Exception('Syntaxfehler','Oeffnende Klammer(n) nicht gefunden.')
+                raise Exception('Syntaxfehler','Öffnende Klammer(n) nicht gefunden.')
         if chk > 0:
             raise Exception('Syntaxfehler','Schliessende Klammer(n) nicht gefunden.')
         return exist
 
-    def find_closing(self, terms, start):
-        i = 0
-        c = 0
+    def _find_closing_bracket(self, terms, start):
+        i = c = 0
         for i in range(len(terms)):
             item = terms[i]
             if item == '(':
@@ -168,22 +235,15 @@ class calc_model:
                 if c == 0:
                     return i
 
-    def build_lr_term(self, char, terms, _class):
-        i = terms.index(char)
-        left = self.parse_term(terms[:i])
-        right = self.parse_term(terms[i+1:])
-        return _class(left, right)
-
-    def build_r_term(self, char, terms, _class):
-        i = terms.index(char)
-        operand = self.parse_term(terms[i+1:])
-        return _class(operand)
-
-    def solve_brackets(self, terms)
-        while self.check_brackets(terms):
-            start = terms.index('(')
-            end = self.find_closing(terms, start)
-            val = self.calc_term(terms[start+1:end])
+    def _solve_brackets(self, terms):
+        """
+        solves all brackets and replaces them by their values
+        """
+        while self._check_brackets(terms): # solve all terms inbetween brackets
+            start = terms.index('(') # opening bracket
+            end = self._find_closing_bracket(terms, start) # closing bracket related to start
+            val = self.calc_term(terms[start+1:end]) # Value of term inbetween brackets
+            # replace term in bracket by its value.
             new = terms[:start]
             new.append(val)
             new.extend(terms[end+1:])
@@ -197,33 +257,12 @@ class calc_model:
         e.g. to do multiplications after addition.
         """
         # at first the brackets need to be solved
-        terms = self.solve_brackets(terms)
+        terms = self._solve_brackets(terms)
         # if terms has only size 1 there must be a value
         if len(terms) == 1:
             return val_term(terms[0])
-        # Operartionen mit 2 Operatoren
-        elif '+' in terms:
-            return self.build_lr_term('+', terms, add_term)
-        elif '-' in terms:
-            return self.build_lr_term('-', terms, sub_term)
-        elif '*' in terms:
-            return self.build_lr_term('*', terms, multi_term)
-        elif '/' in terms:
-            return self.build_lr_term('/', terms, div_term)
-        elif '**' in terms:
-            return self.build_lr_term('**', terms, exp_term)
-        # Operartionen mit 1 Operator
-        elif 'sqrt' in terms:
-            return self.build_r_term('sqrt', terms, sqrt_term)
-        elif 'sin' in terms:
-            return self.build_r_term('sin', terms, sin_term)
-        elif 'cos' in terms:
-            return self.build_r_term('cos', terms, cos_term)
-        elif 'tan' in terms:
-            return self.build_r_term('tan', terms, tan_term)
-        elif 'asin' in terms:
-            return self.build_r_term('asin', terms, asin_term)
-        elif 'acos' in terms:
-            return self.build_r_term('acos', terms, acos_term)
-        elif 'atan' in terms:
-            return self.build_r_term('atan', terms, atan_term)
+
+        for item in _valid_operators:
+            if item in terms:
+                return _valid_operators_d[item](terms, self)
+

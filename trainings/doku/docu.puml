@@ -34,41 +34,49 @@ package calc.py <<Node>> {
 }
 
 package calc_model.py <<Node>> {
+    class _valid_operators << list >>
+    class _valid_operators_d << dictionairy >>
+
     class calc_model {
-        _valid_operators : []
         calc_term(terms)
         parse_term(terms)
     }
     abstract term << (A,lightred) >>{
         value() : abstract
     }
-    abstract val_term{
+    class val_term{
         self.val : float
         __init__(val)
         value()
     }
     abstract lr_term << (A,lightred) >>{
-        __init__(left,right)
+        __init__(terms, calc_model_instance)
     }
     class r_term << (A,lightred) >>{
-        __init__(operand)
+        __init__(terms, calc_model_instance)
     }
     class add_term{
+        char : str
         value()
     }
     class sub_term{
+        char : str
         value()
     }
     class multi_term{
+        char : str
         value()
     }
     class div_term{
+        char : str
         value()
     }
     class exp_term{
+        char : str
         value()
     }
     class sqrt_term{
+        char : str
         value()
     }
 }
@@ -91,9 +99,12 @@ calc_model .....> multi_term : uses
 calc_model .....> div_term : uses
 calc_model .....> exp_term : uses
 calc_model .....> sqrt_term : uses
+calc_model ..> _valid_operators : uses
+calc_model ..> _valid_operators_d : uses
 
 Calculator ....> calc_model : uses
 Calculator .right.> bcolors : uses
+Calculator ....> _valid_operators : uses
 Main .right.> Calculator : uses
 
 @enduml

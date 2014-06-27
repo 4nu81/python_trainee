@@ -1,0 +1,36 @@
+@startuml
+
+start
+while (Programm running)
+:Eingabe;
+
+if (exit) then (yes)
+  :Programm
+  beenden;
+  stop
+elseif (clear) then (yes)
+  :Bildschirm
+  löschen;
+elseif (del) then (yes)
+  :letzen Eintrag
+  im Stack löschen;
+elseif (res) then (yes)
+  :letztes Ergebnis
+  speichern;
+elseif (=) then (yes)
+  :Term berechnen;
+elseif (help) then (yes)
+  :Hilfetext
+  anzeigen;
+elseif (save) then (yes)
+  :letzten Value
+  unter einem
+  Schlüssel speichern;
+else ()
+  :Eingabe prüfen;
+  :Operator oder
+  Zahl auf Stack schreiben;
+endif
+endwhile
+
+@enduml

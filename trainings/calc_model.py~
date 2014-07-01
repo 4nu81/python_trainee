@@ -123,6 +123,11 @@ _valid_operators_d = {
     'sqrt': sqrt_term,
 }
 
+special_chars = {
+    'pi': math.pi,
+    'e':math.e
+}
+
 ################## The Calculations Model ##################
 
 class calc_model:
@@ -135,6 +140,9 @@ class calc_model:
     without altering the view.
     """
 
+    def __init__(self):
+        self._mem = {}
+
     def calc_term(self,terms):
         """
         Returns the result build up from the term-stack
@@ -143,6 +151,17 @@ class calc_model:
         example: ['2','*','10','**','5','+','sqrt','9']
         result : 200003.0
         """
+
+        for item in self._mem:
+            while item in terms:
+                i = terms.index(item)
+                terms[i] = self._mem[item]
+
+        for item in special_chars:
+            while item in terms:
+                i = terms.index(item)
+                terms[i] = str(special_chars[item])
+
         term = self.parse_term(terms)
         return term.value()
 

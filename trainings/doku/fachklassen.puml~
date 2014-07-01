@@ -51,10 +51,6 @@ package calc_model <<Rect>> {
         der Gleichung ermitteln. Dies erfolgt
         rekursiv über seine Blätter und Äste
     }
-    object Speicher{
-        Im Speicher können Werte frei wählbaren
-        Namen zugeordnet werden.
-    }
 }
 
 Main .down.> Calculator

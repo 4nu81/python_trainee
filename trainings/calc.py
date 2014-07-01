@@ -1,58 +1,63 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os, sys, time, math
+import os, sys, time
 import calc_model2 as calc_model
 from calc_model2 import calc_model as model
 
 _no_mem_values = ['save', 'exit', 'help', 'clear', 'del', 'res']
-_special_chars = {
-    'pi': math.pi,
-    'e':math.e
-}
 
-WELCOME = """
-Hello, this is your terminal calculator.
-Hope you get your things done with me.
-"""
+class bcolors:
+    """
+    Defines Colors for output on terminal
+    """
+    RESULT = '\033[92m'
+    CHARS = '\033[91m'
+    WELCOME = '\033[93m'
+    OPERATORS = '\033[96m'
+    DEFAULT = '\033[0m'
 
 help_text = """
-ConsolCalc by am@rcs.de
 
-Howto:
+    ****************************
+    * {WELCOME}ConsoleCalc by am@rcs.de{DEFAULT} *
+    ****************************
 
-type each element of your term seperated by pressing enter
+    Howto:
 
-special characters:
-    {chars}
-allowed operations:
-    {operations}
-type '=' to calculate the result
+    type each element of your term seperated by pressing enter
 
-type 'help' for this help
-type 'res' for using last result
-type 'save' to save last result to a key of your choice exept:
-    * numbers
-    * {operations}
-    * {no_mem_vals}
-type 'del' to delete last term element
-type 'clear' for deleting buffers
-type 'exit' to exit program
-""".format(chars=', '.join(_special_chars),operations=', '.join(calc_model._valid_operators), no_mem_vals=', '.join(_no_mem_values))
+    special characters:
+        {OPERATORS}{chars}{DEFAULT}
+    known operations:
+        {OPERATORS}{operations}{DEFAULT}
+    type {RESULT}'='{DEFAULT} to calculate the result
+
+    type {RESULT}'help'{DEFAULT} for this help
+    type {RESULT}'res'{DEFAULT} for using last result
+    type {RESULT}'save'{DEFAULT} to save last result to a key of your choice exept:
+        * {OPERATORS}numbers{DEFAULT}
+        * {OPERATORS}{operations}{DEFAULT}
+        * {OPERATORS}{no_mem_vals}{DEFAULT}
+    type {RESULT}'del'{DEFAULT} to delete last term element
+    type {RESULT}'clear'{DEFAULT} for deleting buffers
+    type {RESULT}'exit'{DEFAULT} to exit program
+""".format(
+        chars=', '.join(calc_model.special_chars),
+        operations=', '.join(calc_model._valid_operators),
+        no_mem_vals=', '.join(_no_mem_values),
+        WELCOME=bcolors.WELCOME,
+        DEFAULT=bcolors.DEFAULT,
+        OPERATORS=bcolors.OPERATORS,
+        RESULT=bcolors.CHARS
+    )
 
 
 def welcome(s, clear):
     """
     This will be called on programs startup and is a kind of intro
     """
-    #w = ''
     os.system(clear)
-    print WELCOME
-    #for c in WELCOME:
-    #    w += c
-    #    os.system(clear)
-    #    print w
-    #    time.sleep(0.001)
     print help_text
     time.sleep(s)
 
@@ -75,13 +80,6 @@ def is_valid_operator(s):
         return True
     return False
 
-class bcolors:
-    """
-    Defines Colors for output on terminal
-    """
-    RESULT = '\033[92m'
-    DEFAULT = '\033[0m'
-
 class Calculator:
     """
     The Calculators Main Class
@@ -95,7 +93,6 @@ class Calculator:
         """
         self.clear_term = clear
         self._stack = []
-        self._mem = {}
         self._res = None
         self._model = model()
 
@@ -110,9 +107,9 @@ class Calculator:
         Calculates the term and returns the calculated value and True if the
         calculation was successful
         """
+
         try:
-            return self._model.calc_term(self._stack), True
-            #return eval(' '.join(self._stack))
+            return self._model.calc_term(self._stack[:]), True
         except SyntaxError:
             return 'SyntaxError', False
         except ZeroDivisionError:
@@ -131,10 +128,10 @@ class Calculator:
             self._stack.append(item)
         elif is_valid_operator(item):
             self._stack.append('{item}'.format(item=item))
-        elif item in self._mem:
-            self._stack.append('{item}'.format(item=self._mem[item]))
-        elif item in _special_chars:
-            self._stack.append(str(_special_chars[item]))
+        elif item in self._model._mem:
+            self._stack.append('{item}'.format(item=item))
+        elif item in calc_model.special_chars:
+            self._stack.append(item)
         else:
             pass
 
@@ -144,7 +141,7 @@ class Calculator:
         """
         self._stack = []
         self._res = None
-        self._mem = {}
+        self._model._mem = {}
         self.clear()
 
     def _del(self):
@@ -171,9 +168,14 @@ class Calculator:
         """
         self.clear()
         self._res, del_stack = self.calc()
-        print '{term} = {green}{result}{cdefault}'.format(
+        if del_stack:
+            color = bcolors.RESULT
+        else:
+            color = bcolors.CHARS
+        print ''
+        print '    {term} = {green}{result}{cdefault}'.format(
             term=' '.join(self._stack),
-            green=bcolors.RESULT,
+            green=color,
             result=self._res,
             cdefault=bcolors.DEFAULT
         )
@@ -201,17 +203,17 @@ class Calculator:
         
         param 'key': key where res is saved as value
         """
-        self._mem[key] = self._res
+        self._model._mem[key] = self._res
         self.clear()
 
     def _print_mem(self):
         """
         prints the memory to the terminal
         """
-        if self._mem:
-            print 'Memory:'
-            for key in self._mem:
-                print '{key} = {mem}'.format(key=key, mem=str(self._mem[key]))
+        if self._model._mem:
+            print '    Memory:'
+            for key in self._model._mem:
+                print '    {key} = {mem}'.format(key=key, mem=str(self._model._mem[key]))
             print ''
 
     def _save(self):
@@ -220,18 +222,20 @@ class Calculator:
         """
         if self._res:
             not_done = True
-            s = 'Give a name to save to : '
+            s = '    Give a name to save to (or exit to cancel) : '
             while not_done:
                 nr = raw_input(s)
+                if nr == 'exit':
+                    break
                 if not is_number(nr) \
                     and not is_valid_operator(nr) \
                     and not nr in _no_mem_values \
-                    and not nr in _special_chars:
+                    and not nr in calc_model.special_chars:
                     self._memory(nr)
                     not_done = False
                 else:
-                    print '{nr} is an invalid save name.'.format(nr=nr)
-                    s = 'Enter another name to save to : '
+                    print '{o_color}{nr} is an invalid save name.{default}'.format(nr=nr, o_color=bcolors.CHARS, default=bcolors.DEFAULT)
+                    s = '    Enter another name to save to : '
         self.clear()
 
     def _shutdown(self):
@@ -264,13 +268,13 @@ class Calculator:
 
     def run(self):
         """
-        The Main procedure of the Calculator. If this loop exits the whole program exits
+        The Main procedure of the Calculator. If this loop ends the program will exit
         """
         while True:
             self._print_mem()
-            print 'Enter your term:'
-            print 'term : {term}'.format(term=' '.join(self._stack))
-            value = raw_input('$ : ')
+            print '  Enter your term:'
+            print '    term : {term}'.format(term=' '.join(self._stack))
+            value = raw_input('  $ : ')
             self.proceed_input(value)
 
 

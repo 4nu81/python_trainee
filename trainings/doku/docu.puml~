@@ -1,6 +1,10 @@
 @startuml
 package calc.py <<Node>> {
     class Calculator {
+        clear_term : str
+        _stack : []
+        _res : str
+        _model : calc_model
         __init__(clear)
         clear()
         calc()
@@ -22,22 +26,27 @@ package calc.py <<Node>> {
         RESULT : str
         DEFAULT : str
     }
-    class Main << (M,gold) >> {
-        _no_mem_values : []
-        help_text : str
-        WELCOME : str
-        welcome(clear)
-        is_number(s)
-        is_valid_operator(s)
-        hook() : "Main Method"
+
+    class _no_mem_values << dictionairy >>
+    class help_text << string >>
+    class welcome << (M,red) >> {
+        clear
     }
+    class is_number << (M,red) >> {
+        s
+    }
+    class is_valid_operator << (M,red) >> {
+        s
+    }
+    class if_main << (M,red) >>
 }
 
 package calc_model.py <<Node>> {
     class _valid_operators << list >>
-    class _valid_operators_d
+    class _valid_operators_d << dictionairy >>
 
     class calc_model {
+        _mem : []
         calc_term(terms)
         parse_term(terms)
     }
@@ -45,7 +54,7 @@ package calc_model.py <<Node>> {
         value() : abstract
     }
     class val_term{
-        self.val : float
+        val : float
         __init__(val)
         value()
     }
@@ -105,6 +114,15 @@ calc_model ..> _valid_operators_d : uses
 Calculator ....> calc_model : uses
 Calculator .right.> bcolors : uses
 Calculator ....> _valid_operators : uses
-Main .right.> Calculator : uses
+
+Calculator ..> _no_mem_values : uses
+
+if_main ..> help_text : uses
+
+if_main ..> welcome : uses
+
+Calculator ..> is_number : uses
+Calculator ..> is_valid_operator : uses
+if_main ..> Calculator : uses
 
 @enduml

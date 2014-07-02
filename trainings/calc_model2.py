@@ -104,6 +104,16 @@ class r_term(term):
         else:
             raise Exception('Invalid Argument', '')
 
+class proz_term(r_term):
+    char = '%'
+    def value(self):
+        return self.operand.value() * 0.01
+
+class rezi_term(r_term):
+    char = '1/'
+    def value(self):
+        return 1.0 / self.operand.value()
+
 class sqrt_term(r_term):
     char = 'sqrt'
     def value(self):
@@ -159,7 +169,7 @@ class deg_term(r_term):
 
 # List is unfortunately necessary while dicts are not sorted
 # as they are written in source
-_valid_operators = ['(',')','+','-','/','*','**','sqrt','sin','cos','tan','asin','acos','atan','rad','deg','log']
+_valid_operators = ['(',')','+','-','/','*','**','%', '1/','sqrt','sin','cos','tan','asin','acos','atan','rad','deg','log']
 
 _valid_operators_d = {
     # 'operational_char' : term_class,
@@ -171,6 +181,8 @@ _valid_operators_d = {
     '*': multi_term,
     '**': exp_term,
 
+    '%': proz_term,
+    '1/': rezi_term,
     'sqrt': sqrt_term,
     'sin': sin_term,
     'cos': cos_term,

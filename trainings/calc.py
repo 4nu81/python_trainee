@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import os, sys, time
-import calc_model2 as calc_model
-from calc_model2 import calc_model as model
+import calc_model as calc_model
+from calc_model import calc_model as model
 
-_no_mem_values = ['save', 'exit', 'help', 'clear', 'del', 'res', 'mem']
+_no_mem_values = ['save', 'exit', 'help', 'clear', 'del', 'res', 'mem', 'info']
 
 class bcolors:
     """
@@ -34,6 +34,7 @@ help_text = """
     type {RESULT}'='{DEFAULT} to calculate the result
 
     type {RESULT}'help'{DEFAULT} for this help
+    type {RESULT}'info'{DEFAULT} for program informations
     type {RESULT}'res'{DEFAULT} for using last result
     type {RESULT}'save'{DEFAULT} to save last result to a key of your choice exept:
         * {OPERATORS}numbers{DEFAULT}
@@ -222,6 +223,35 @@ class Calculator:
                 print '      {key} = {mem}'.format(key=k, mem=str(v))
             print ''
 
+    def _print_infos(self):
+        """
+        Prints infos beside the program
+        """
+        self.clear()
+        print """
+        
+        This Calculator was programmed by Andreas Maertens at RCS-Computersystemhaus GmbH
+
+        Builtin_Modules:
+            {builtin_modules}
+
+        Modules Loaded:
+            {loaded_modules}
+
+        System:
+            OS : {os}
+            PID : {chdir}
+
+
+        """.format(
+            builtin_modules='\n            '.join(sys.builtin_module_names),
+            loaded_modules='\n            '.join(sys.modules.keys()),
+            os = sys.platform,
+            arch = sys.platform,
+            chdir = os.getpid(),
+        )
+
+
     def _save(self):
         """
         routine to save the last result to the memory. here we try to find a valid key to save to.
@@ -271,6 +301,8 @@ class Calculator:
             self._save()
         elif value == 'mem':
             self._print_mem()
+        elif value == 'info':
+            self._print_infos()
         else:
             self._add(value)
 

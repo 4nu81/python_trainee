@@ -101,28 +101,28 @@ multi_term -down-|> lr_term
 div_term -down-|> lr_term
 exp_term -down-|> lr_term
 sqrt_term -down-|> r_term
-calc_model .....> val_term
-calc_model .....> add_term
-calc_model .....> sub_term
-calc_model .....> multi_term
-calc_model .....> div_term
-calc_model .....> exp_term
-calc_model .....> sqrt_term
-calc_model ..> _valid_operators
-calc_model ..> _valid_operators_d
+calc_model .....> val_term : uses
+calc_model .....> add_term : uses
+calc_model .....> sub_term : uses
+calc_model .....> multi_term : uses
+calc_model .....> div_term : uses
+calc_model .....> exp_term : uses
+calc_model .....> sqrt_term : uses
+calc_model ..> _valid_operators : uses
+calc_model ..> _valid_operators_d : uses
 
-Calculator ....> calc_model
-Calculator .right.> bcolors
-Calculator ....> _valid_operators
+Calculator ....> calc_model : uses
+Calculator .right.> bcolors : uses
+Calculator ....> _valid_operators : uses
 
-Calculator ..> _no_mem_values
+Calculator ..> _no_mem_values : uses
 
-if_main ..> help_text
+if_main ..> help_text : uses
 
-if_main ..> welcome
+if_main ..> welcome : uses
 
-Calculator ..> is_number
-Calculator ..> is_valid_operator
-if_main ..> Calculator
+Calculator ..> is_number : uses
+Calculator ..> is_valid_operator : uses
+if_main ..> Calculator : uses
 
 @enduml

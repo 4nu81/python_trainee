@@ -238,9 +238,9 @@ class calc_model:
             elif item == ')':
                 chk -= 1
             if chk < 0:
-                raise Exception('Syntaxfehler','Öffnende Klammer(n) nicht gefunden.')
+                raise Exception('syntaxerror','opening bracket(s) not found.')
         if chk > 0:
-            raise Exception('Syntaxfehler','Schliessende Klammer(n) nicht gefunden.')
+            raise Exception('syntaxerror','closing bracket(s) not found.')
         return exist
 
     def _find_closing_bracket(self, terms, start):

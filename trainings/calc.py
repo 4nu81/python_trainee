@@ -5,7 +5,7 @@ import os, sys, time
 import calc_model2 as calc_model
 from calc_model2 import calc_model as model
 
-_no_mem_values = ['save', 'exit', 'help', 'clear', 'del', 'res']
+_no_mem_values = ['save', 'exit', 'help', 'clear', 'del', 'res', 'mem']
 
 class bcolors:
     """
@@ -39,6 +39,7 @@ help_text = """
         * {OPERATORS}numbers{DEFAULT}
         * {OPERATORS}{operations}{DEFAULT}
         * {OPERATORS}{no_mem_vals}{DEFAULT}
+    type {RESULT}'mem'{DEFAULT} to show the memory
     type {RESULT}'del'{DEFAULT} to delete last term element
     type {RESULT}'clear'{DEFAULT} for deleting buffers
     type {RESULT}'exit'{DEFAULT} to exit program
@@ -115,13 +116,17 @@ class Calculator:
         except ZeroDivisionError:
             return 'Zero Division Error', False
         except Exception as e:
-            return str(e), False
+            msg, txt = e.args
+            if txt:
+                return '{msg} - {txt}'.format(msg=msg, txt=txt), False
+            else:
+                return '{msg}'.format(msg=msg), False
 
     def proceed(self, item):
         """
         Checks if entered Value is a Number or valid Operator. If not it checks if there is a
         key in memory to return the corresponding value.
-        
+
         param 'item': string to be checked
         """
         if is_number(item):
@@ -210,10 +215,11 @@ class Calculator:
         """
         prints the memory to the terminal
         """
+        self.clear()
         if self._model._mem:
             print '    Memory:'
-            for key in self._model._mem:
-                print '    {key} = {mem}'.format(key=key, mem=str(self._model._mem[key]))
+            for k, v in sorted(self._model._mem.items()):
+                print '      {key} = {mem}'.format(key=k, mem=str(v))
             print ''
 
     def _save(self):
@@ -222,7 +228,7 @@ class Calculator:
         """
         if self._res:
             not_done = True
-            s = '    Give a name to save to (or exit to cancel) : '
+            s = '    Enter a name to save to (exit to cancel) : '
             while not_done:
                 nr = raw_input(s)
                 if nr == 'exit':
@@ -234,8 +240,8 @@ class Calculator:
                     self._memory(nr)
                     not_done = False
                 else:
-                    print '{o_color}{nr} is an invalid save name.{default}'.format(nr=nr, o_color=bcolors.CHARS, default=bcolors.DEFAULT)
-                    s = '    Enter another name to save to : '
+                    print '        {o_color}{nr} is an invalid save name.{default}'.format(nr=nr, o_color=bcolors.CHARS, default=bcolors.DEFAULT)
+                    s = '    Enter another name to save to (exit to cancel): '
         self.clear()
 
     def _shutdown(self):
@@ -263,6 +269,8 @@ class Calculator:
             self._help()
         elif value == 'save':
             self._save()
+        elif value == 'mem':
+            self._print_mem()
         else:
             self._add(value)
 
@@ -271,7 +279,7 @@ class Calculator:
         The Main procedure of the Calculator. If this loop ends the program will exit
         """
         while True:
-            self._print_mem()
+            #self._print_mem()
             print '  Enter your term:'
             print '    term : {term}'.format(term=' '.join(self._stack))
             value = raw_input('  $ : ')

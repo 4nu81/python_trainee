@@ -12,7 +12,7 @@ class bcolors:
     Defines Colors for output on terminal
     """
     RESULT = '\033[92m'
-    CHARS = '\033[91m'
+    CHARS = '\033[93m'
     WELCOME = '\033[93m'
     OPERATORS = '\033[96m'
     DEFAULT = '\033[0m'

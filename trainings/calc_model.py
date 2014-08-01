@@ -109,6 +109,11 @@ class sqrt_term(r_term):
     def value(self):
         return self.operand.value() ** 0.5
 
+class rt3_term(r_term):
+    char = '3rt'
+    def value(self):
+        return self.operand.value() ** (1.0 / 3.0)
+
 class proz_term(r_term):
     char = '%'
     def value(self):
@@ -121,7 +126,7 @@ class rezi_term(r_term):
 
 # List is unfortunately necessary while dicts are not sorted
 # as they are written in source
-_valid_operators = ['+','-','/','*','**','sqrt', '%', '1/']
+_valid_operators = ['+','-','/','*','**','sqrt', '%', '1/', '3rt']
 
 _valid_operators_d = {
 # 'operational_char' : term_class,
@@ -133,6 +138,7 @@ _valid_operators_d = {
     'sqrt': sqrt_term,
     '%': proz_term,
     '1/': rezi_term,
+    '3rt': rt3_term,
 }
 
 special_chars = {

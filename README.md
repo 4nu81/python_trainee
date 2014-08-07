@@ -3,5 +3,4 @@ python_trainee
 
 Python Trainee Projects
 
-
-Huhu
+SSSS

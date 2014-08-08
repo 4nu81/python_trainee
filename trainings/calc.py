@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import os, sys, time
-import calc_model as calc_model
-from calc_model import calc_model as model
+import calc_model2 as calc_model
+from calc_model2 import calc_model as model
 
 _no_mem_values = ['save', 'exit', 'help', 'clear', 'del', 'res', 'mem', 'info']
 

@@ -1,42 +1,39 @@
 import sys
-import pygame as pg
-import random
-from sprites import Block, Player, Bullet, Ball
 
+import pygame as pg
 pg.init()
 
+import random
+from sprites import Block, Player, Bullet, Ball
+import params
+
+
 class game():
-
-    infoObject = pg.display.Info()
-
-    screen_width = infoObject.current_w
-    screen_height= infoObject.current_h
 
     def reset(self, count, reset=False):
         self.level += 1.0
         self.add_ball()
-        self.energy_reg += 0.005
-        self.energy_max += 3
+        params.energy_reg += 0.005
+        params.energy_max += 3
         for i in range(count):
-            block = Block(self, self.level * 0.1)
-            block.pos[0] = random.randrange(game.screen_width)
+            block = Block(self.level * 0.1)
+            block.pos[0] = random.randrange(params.screen_width)
             if reset:
                 block.pos[1] = random.randrange(-200, -100)
             else:
-                block.pos[1] = random.randrange(game.screen_height - 100)
+                block.pos[1] = random.randrange(params.screen_height - 100)
 
             self.block_list.add(block)
             self.all_sprites_list.add(block)
 
     def add_ball(self):
-        ball = Ball(self)
+        ball = Ball()
         self.all_sprites_list.add(ball)
         self.ball_list.add(ball)
 
     def __init__(self):
         # Init Display
-        self.screen = pg.display.set_mode([game.screen_width, game.screen_height], pg.FULLSCREEN)
-
+        self.screen = pg.display.set_mode([params.screen_width, params.screen_height], params.screen_mode)
         # Init Font
         self.font = pg.font.SysFont('Calibri', 25, True, False)
 
@@ -46,20 +43,18 @@ class game():
         self.all_sprites_list = pg.sprite.Group()
         self.ball_list = pg.sprite.Group()
 
-        # Init Game Parameter
-        self.level = 0
-        self.energy = 15
-        self.energy_reg = 0.02
-        self.energy_max = 20
-        self.shoot_speed = 4
-
         # Add Blocks and ball
+        self.level = 0
+        self.energy = params.energy
+        self.energy_max = params.energy_max
+        self.energy_reg = params.energy_reg
+        self.shoot_speed = params.shoot_speed
         self.reset(50)
 
         # Add Player
-        self.player = Player(self)
+        self.player = Player()
         self.all_sprites_list.add(self.player)
-        self.player.rect.y = game.screen_height - self.player.height - 5
+        self.player.rect.y = params.screen_height - self.player.height - 5
 
     # **** Ball Collisions ****
 
@@ -68,11 +63,11 @@ class game():
             x = ball.pos[0]
             y = ball.pos[1]
             r = ball.rad
-            if x < 0 or x + 2*r > game.screen_width:
+            if x < 0 or x + 2*r > params.screen_width:
                 ball.angle = -ball.angle
             if y < 0:
                 ball.angle = 180 - ball.angle
-            elif y + 2*r > game.screen_height:
+            elif y + 2*r > params.screen_height:
                 self.score -= 10
                 self.all_sprites_list.remove(ball)
                 self.ball_list.remove(ball)
@@ -142,7 +137,7 @@ class game():
                 tick += 1
                 if self.energy > 1 and not tick%self.shoot_speed:
                     self.energy -= 1
-                    bullet = Bullet(self)
+                    bullet = Bullet()
                     bullet.rect.x = self.player.rect.x + self.player.width / 2 - bullet.width / 2
                     bullet.rect.y = self.player.rect.y
                     self.all_sprites_list.add(bullet)

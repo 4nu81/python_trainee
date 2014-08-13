@@ -20,10 +20,22 @@ class Creator:
         self.mass = random.randint(1,4)
         self.size = calculateRadius(self.mass)
 
+    def preRelease(self, (x, y)):
+        dx = self.x - x
+        dy = self.y - y
+        speed = math.hypot(dx, dy) * 0.01
+        angle = math.atan2(dy, dx) + 0.5 * math.pi
+        p = PyParticles.Particle((self.x,self.y), self.size, self.mass)
+        p.angle = angle
+        p.speed = speed
+        p.color = (255,255,255)
+        p.drag = 0
+        return p
+
     def release(self, (x, y)):
         dx = self.x - x
         dy = self.y - y
-        speed = math.hypot(dx, dy) * 0.1
+        speed = math.hypot(dx, dy) * 0.01
         angle = math.atan2(dy, dx) + 0.5 * math.pi
         self.universe.addParticles(
             x=self.x,
@@ -58,8 +70,11 @@ class UniverseScreen:
         (self.mx, self.my) = (0,0)
         self.magnification = 1.0
 
-    def set_paused(self):
-         self.paused = (True, False)[self.paused]
+    def set_paused(self, **kargs):
+        if 'setto' in kargs:
+            self.paused = kargs['setto']
+        else:
+            self.paused = (True, False)[self.paused]
 ### Main Program
 
 universe = PyParticles.Environment((width, height))
@@ -111,6 +126,7 @@ while running:
                 x = int((x - universe_screen.mx) / universe_screen.magnification - universe_screen.dx)
                 y = int((y - universe_screen.my) / universe_screen.magnification - universe_screen.dy)
                 creator = Creator(universe, (x,y))
+                universe_screen.set_paused(setto=True)
             if right:
                 for p in range(10):
                     create_particle()
@@ -121,24 +137,48 @@ while running:
                 y = int((y - universe_screen.my) / universe_screen.magnification - universe_screen.dy)
                 creator.release((x,y))
                 creator = None
+                universe_screen.set_paused(setto=False)
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
             elif event.key in key_to_function:
                 key_to_function[event.key](universe_screen)
 
-    if not universe_screen.paused:
-        universe.update()
-    screen.fill(universe.color)
-
     particles_to_remove = []
 
+    # Universum bewegt sich nur, wenn nicht pausiert
+    if not universe_screen.paused:
+        universe.update()
+
+    screen.fill(universe.color)
+
     if creator:
+        pre = None
+        # Powerlinie zeichnen
         (x,y) = pygame.mouse.get_pos()
         (cx,cy) = (creator.x, creator.y)
         cx = int(universe_screen.mx + (universe_screen.dx + cx) * universe_screen.magnification)
         cy = int(universe_screen.my + (universe_screen.dy + cy) * universe_screen.magnification)
         pygame.draw.line(screen, (255,0,0), (cx, cy), (x,y), 2)
+
+        # Mouseposition umrechnen
+        x = int((x - universe_screen.mx) / universe_screen.magnification - universe_screen.dx)
+        y = int((y - universe_screen.my) / universe_screen.magnification - universe_screen.dy)
+
+        # Prediction zeichnen
+        pre = creator.preRelease((x,y))
+        # 500 schritte vorausberechnen
+        for i in range(100):
+            pre.move()
+            for p in universe.particles:
+                pre.attract(p, False)
+            x = int(universe_screen.mx + (universe_screen.dx + pre.x) * universe_screen.magnification)
+            y = int(universe_screen.my + (universe_screen.dy + pre.y) * universe_screen.magnification)
+            size = int(pre.size * universe_screen.magnification)
+            if size < 2:
+                pygame.draw.rect(screen, pre.color, (x, y, 2, 2,))
+            else:
+                pygame.draw.ellipse(screen, (205,255,255), (x - size, y - size, 2 * size, 2 * size))
 
     for p in universe.particles:
         if 'collide_with' in p.__dict__:
@@ -155,6 +195,7 @@ while running:
             pygame.draw.rect(screen, p.color, (x, y, 2, 2,))
         else:
             pygame.draw.ellipse(screen, (205,255,255), (x - size, y - size, 2 * size, 2 * size))
+
     for p in particles_to_remove:
         if p in universe.particles:
             universe.particles.remove(p)

@@ -3,41 +3,12 @@ import random
 
 random.seed()
 
-def collide_new(par1,par2):
-    p1x = par1.mass * par1.speed * sin(par1.angle) / sqrt(sin(par1.angle)**2 + cos(par1.angle)**2)
-    p1y = par1.mass * par1.speed * -cos(par1.angle) / sqrt(sin(par1.angle)**2 + cos(par1.angle)**2)
-
-    p2x = par2.mass * par2.speed * sin(par2.angle) / sqrt(sin(par2.angle)**2 + cos(par2.angle)**2)
-    p2y = par2.mass * par2.speed * -cos(par2.angle) / sqrt(sin(par2.angle)**2 + cos(par2.angle)**2)
-
-    pgesx = p1x + p2x
-    pgesy = p1y + p2y
-
-
-
-
-
-
-
-
 def collide(p1, p2):
     dx = p1.x - p2.x
     dy = p1.y - p2.y
-
     # Abstand der Mittelpunkte
     dist = hypot(dx, dy)
     if dist < p1.size + p2.size:
-        print('#'*12)
-        print('P1: name: {name} - pos: {pos} - speed: {speed}'.format(name=p1.name, pos=(p1.x,p1.y), speed=p1.speed, mass=p1.mass))
-        print('P2: name: {name} - pos: {pos} - speed: {speed} - mass={mass}'.format(name=p2.name, pos=(p2.x,p2.y), speed=p2.speed, mass=p2.mass))
-
-        x1 = sin(p1.angle)
-        x2 = sin(p2.angle)
-        y1 = -cos(p1.angle)
-        y2 = -cos(p2.angle)
-
-        print('P1 vector: {p1}'.format(p1=(x1,y1)))
-        print('P2 vector: {p2}'.format(p2=(x2,y2)))
 
         # Tangente senkrecht zu p1->p2
         tangent = atan2(dy, dx) + 0.5 * pi
@@ -56,9 +27,6 @@ def collide(p1, p2):
             (p2.angle, p2.speed * (p2.mass - p1.mass) / total_mass),
             (tangent + pi, 2 * p1.speed * p1.mass / total_mass),
         )
-        print('*'*12)
-        print('P1: name: {name} - pos: {pos} - angle: {angle} - speed: {speed}'.format(name=p1.name, pos=(p1.x,p1.y), angle=p1.angle, speed=p1.speed, mass=p1.mass))
-        print('P2: name: {name} - pos: {pos} - angle: {angle} - speed: {speed} - mass={mass}'.format(name=p2.name, pos=(p2.x,p2.y), angle=p2.angle, speed=p2.speed, mass=p2.mass))
 
         # das Elastizitaetsmodul
         elasticity = p1.elasticity * p2.elasticity

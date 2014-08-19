@@ -67,10 +67,8 @@ class pool:
 
     def run(self):
         while True:
-            
-            self.del_balls()
-            self.check_kollision()
             self.sim()
+            self.check_kollision()
             self.draw_balls()
             for event in pg.event.get():
                 if event.type == pg.MOUSEBUTTONDOWN and event.button == LEFT:
@@ -91,16 +89,8 @@ class pool:
                 self.clear_ball(ball)
                 self.balls.remove(ball)
 
-    def clear_ball(self, ball):
-            x = int(ball.pos[0])
-            y = int(ball.pos[1])
-            pg.draw.circle(self.window, pg.Color('black'), (x, y), ball.radius)
-
-    def del_balls(self):
-        for ball in self.balls:
-            self.clear_ball(ball)
-
     def draw_balls(self):
+        self.window.fill((0,0,0))
         for ball in self.balls:
             x = int(ball.pos[0])
             y = int(ball.pos[1])

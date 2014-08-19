@@ -98,7 +98,7 @@ class pool:
         pg.display.flip()
 
     def create_rand_ball(self, name, pos=None):
-        rad = random.randint(10, 15)
+        rad = random.randint(15, 20)
         if not pos:
             pos = (random.randint(rad, width - rad),random.randint(rad, height - rad))
         scol = colors[random.randint(0,len(colors)-1)]

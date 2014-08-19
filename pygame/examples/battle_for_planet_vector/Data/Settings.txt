@@ -1,0 +1,20 @@
+#WARNING: Do not change anything in this file.
+#To change a setting, go to Options in the Main Menu.
+
+#Keys:
+L 276
+R 275
+T 273
+F 32
+
+#Effects:
+PSD 4
+Light False
+ThO 0
+TuO 0
+ExO 0
+BuO False
+
+#Sound:
+M 0.25
+E 0.25

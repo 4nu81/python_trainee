@@ -1,0 +1,2 @@
+Font.tff = Eager Naturalist
+Font2.ttf = Maiandra GD

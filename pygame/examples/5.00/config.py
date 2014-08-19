@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 #Initial screen resolution
 screen_size = [800,600]
 

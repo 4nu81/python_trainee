@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import pygame

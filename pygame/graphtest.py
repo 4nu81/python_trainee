@@ -90,7 +90,7 @@ class pool:
                 self.balls.remove(ball)
 
     def draw_balls(self):
-        self.window.fill((0,0,0))
+        self.window.fill((20,0,0))
         for ball in self.balls:
             x = int(ball.pos[0])
             y = int(ball.pos[1])

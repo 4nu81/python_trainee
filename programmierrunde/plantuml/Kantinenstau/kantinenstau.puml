@@ -1,0 +1,81 @@
+@startuml
+
+title Fachklassen
+
+class kantine {
+ anzahl plaetze
+}
+
+class gast
+
+class schlange {
+ anzahl gaeste
+}
+
+class kasse
+
+gast "0..n" -right-> "1" kantine : besucht
+kantine "1" *--> "1..n" kasse : hat
+kasse "1" -left-> "1" schlange : hat
+gast "0..n" --> "1" schlange : stehen an
+
+@enduml
+
+@startuml
+
+title Use-Case
+
+:system:
+
+system -- (gast hinzufuegen)
+system -- (gast entfernen)
+system -- (anzahl gaeste in schlangen anzeigen)
+
+@enduml
+
+@startuml
+
+title Softwarearchitektur
+
+package Kantine {
+
+  class kantine {
+    kassen []
+    anzahl_in_schlangen()
+  }
+
+  class schlange {
+    add()
+    remove()
+    anzahl ro
+  }
+  class kasse {
+    schlange
+    kassieren()
+  }
+  note bottom of kasse
+    kassieren entfernt 1 gast aus schlange
+    schlange.remove()
+  end note
+
+  kantine *-right-> kasse
+  kasse *-right-> schlange
+
+}
+
+package Controller {
+  class controller {
+    gast_hinzu()
+  }
+}
+
+package View {
+  class view {
+    show()
+  }
+}
+
+view -- kantine
+controller -- kantine
+
+@enduml

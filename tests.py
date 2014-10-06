@@ -1,3 +1,5 @@
+# smthg to test
+
 class toTest:
     def fizzbuzz(self, nbr):
         result = ''
@@ -10,31 +12,36 @@ class toTest:
         else:
             return result
 
+# setup the tests
+
 import unittest
 from test import test_support
 
+# define the tests
+
 class MyTestCase1(unittest.TestCase):
+    def setUp(self):
+        self.t = toTest()
+
     def test_feature_a(self):
-        t = toTest()
-        assert t.fizzbuzz(3) == 'fizz', '3 Fehler'
+        assert self.t.fizzbuzz(3) == 'fizz', '3 Fehler'
 
     def test_feature_b(self):
-        t = toTest()
-        assert t.fizzbuzz(5) == 'buzz', '5 Fehler'
+        assert self.t.fizzbuzz(5) == 'buzz', '5 Fehler'
 
     def test_feature_c(self):
-        t = toTest()
-        assert t.fizzbuzz(15) == 'fizzbuzz', '15 Fehler'
+        assert self.t.fizzbuzz(15) == 'fizzbuzz', '15 Fehler'
 
+    def tearDown(self):
+        self.t = None
 
+# run the tests
 
 def test_main():
-    test_support.run_unittest(MyTestCase1)
+    test_support.run_unittest(MyTestCase1) # bestimmtes Testklasse laufen lassen
+    test_support.run_unittest(__name__) # alle Testklassen in diesem Modul laufen lassen
+
+# call the tests
 
 if __name__ == '__main__':
     test_main()
-
-#l = []
-#for i in range(30):
-#    l.append(toTest.fizzbuzz(i))
-#print l

@@ -1,0 +1,34 @@
+@startuml
+    class village {
+        int gold
+        int food
+        int count(type)
+        bool status()
+        tick()
+        add_item(type, count=0)
+    }
+
+    class item {
+        int health
+        int attack
+        int defend
+        int price_gold
+        int price_food
+        int price_villager
+        int run_gold
+        int run_food
+        [] getType()
+    }
+
+    note right: "getType() e.g. ['item','person','troop','horse']\nto use like:\n'troop' in spear.getType() : True\n'building' in spear.getType() : False"
+
+    buildings --|> item
+    farm --|> buildings
+    manufacture --|> buildings
+    person --|> item
+    villager --|> person
+    troop --|> person
+    spear --|> troop
+    sword --|> troop
+    horse --|> troop
+@enduml

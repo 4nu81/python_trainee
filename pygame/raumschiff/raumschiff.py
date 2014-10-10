@@ -1,16 +1,16 @@
-#! /usr/bin/python
-
-import random, time
+import random
 
 class Weapon:
-    def __init__(self, name, dmg=(3,5)):
+    def __init__(self, name, dmg=(3,5), acc=45):
         self.name = name
         self.dmg = dmg
+        self.accuracy = acc
 
 class Captain:
     def __init__(self, name, exp=1.0):
         self.name = name
         self._exp = exp
+        self.level = 1
 
     @property
     def exp(self):
@@ -38,8 +38,11 @@ class Ship:
     def getAttack(self):
         attk = 0
         for weapon in self.weapons:
-            attk += random.randint(weapon.dmg[0], weapon.dmg[1])
-        return attk + self.captain.exp / 10
+            if random.randint(0,100) <= (weapon.accuracy + self.captain.exp):
+                attk += random.randint(weapon.dmg[0], weapon.dmg[1])
+            else:
+                print "{weapon} missed".format(weapon=weapon.name)
+        return attk
 
     def getDamage(self, dmg):
         armor = self.armor * float(self.captain.exp)
@@ -57,40 +60,4 @@ class Ship:
             return True
         else:
             return False
-
-ships = []
-
-ship1 = Ship(name='Enterprise', captain='Cpt. Picard')
-ship1.weapons = [Weapon('Burst Laser II', (4,6)), Weapon('Burst Laser II', (4,6))]
-
-ship2 = Ship(name='Orion', captain='Cpt. Balu')
-ship1.weapons = [Weapon('Burst Laser I', (3,5)), Weapon('Burst Laser I', (3,5))]
-
-ships.append(ship1)
-ships.append(ship2)
-
-for i in range(20):
-    print "Round {val}".format(val=i+1)
-    for ship in ships:
-        dmg = random.randint(1,6)
-        if dmg > 2:
-            asteroid = Asteroid(size=dmg)
-            attk = ship.getAttack()
-            asteroid.hp -= attk
-            if asteroid.hp <= 0:
-                exp = asteroid.size / 10.0
-                ship.captain.exp += exp
-                print "{ship} - asteroid has been destroyed - attk {attk} - exp +{exp} = {nexp}".format(attk=attk,ship=ship.name,exp=exp,nexp=ship.captain.exp)
-            else:
-                ship.getDamage(asteroid.size)
-                if not ship.getAlive():
-                    print "{name} has been destroyed".format(name=ship.name)
-                    ships.remove(ship)
-    print "\n###\n"
-    time.sleep(1)
-
-print '\n'
-for ship in ships:
-    print "{name} has survived with {hull} hull left".format(name=ship.name, hull=ship.hull)
-
 

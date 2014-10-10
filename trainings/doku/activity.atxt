@@ -1,0 +1,26 @@
+An error has occured : java.lang.UnsupportedOperationException: ATXT                              
+By Grabthar's hammer, by the sons of Worvan, you shall be avenged.                                
+                                                                                                  
+PlantUML (8000) cannot parse result from dot/GraphViz.                                            
+                                                                                                  
+This may be caused by :                                                                           
+ - a bug in PlantUML                                                                              
+ - a problem in GraphViz                                                                          
+                                                                                                  
+ to solve this issue.diagram and this image to                                                    
+You can try to turn arround this issue by simplifing your diagram.                                
+                                                                                                  
+java.lang.UnsupportedOperationException: ATXT                                                     
+  net.sourceforge.plantuml.FileFormatOption.createUGraphic(Unknown Source)                        
+  net.sourceforge.plantuml.graphic.TextBlockUtils.getPrinted(Unknown Source)                      
+  net.sourceforge.plantuml.activitydiagram3.ActivityDiagram3.exportDiagramInternal(Unknown Source)
+  net.sourceforge.plantuml.UmlDiagram.exportDiagram(Unknown Source)                               
+  net.sourceforge.plantuml.PSystemUtils.exportDiagramsActivityDiagram3(Unknown Source)            
+  net.sourceforge.plantuml.PSystemUtils.exportDiagrams(Unknown Source)                            
+  net.sourceforge.plantuml.SourceFileReader.getGeneratedImages(Unknown Source)                    
+  net.sourceforge.plantuml.DirWatcher2$1.call(Unknown Source)                                     
+  net.sourceforge.plantuml.DirWatcher2$1.call(Unknown Source)                                     
+  java.util.concurrent.FutureTask.run(FutureTask.java:262)                                        
+  java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)                 
+  java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)                 
+  java.lang.Thread.run(Thread.java:744)                                                           

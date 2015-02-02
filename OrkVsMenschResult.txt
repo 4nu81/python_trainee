@@ -1,0 +1,26 @@
+
+Runde 1
+Schaden Whaaaagh: 11
+Schaden Helmut: 8
+
+Runde 2
+Schaden Whaaaagh: 8
+Schaden Helmut: 5
+
+Runde 3
+Schaden Whaaaagh: 9
+Schaden Helmut: 14
+
+Runde 4
+Schaden Whaaaagh: 8
+Schaden Helmut: 7
+
+Runde 5
+Schaden Whaaaagh: 6
+Schaden Helmut: 12
+
+Runde 6
+Schaden Whaaaagh: 8
+Schaden Helmut: 10
+
+Whaaaagh hat verloren

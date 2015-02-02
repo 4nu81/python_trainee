@@ -8,13 +8,20 @@ def decorator(orig_function):
         print '\n** decoration ends **'
     return new_func
 
+
+
+
 class myClass:
 
     @decorator #passes write() to decorator
     def write(self, mytext):
         print mytext
 
+    def write2(self,mytext):
+        print mytext
+
 if __name__ == '__main__':
 
     c = myClass()
     c.write('The output has been decorated ')
+    c.write2('The output has been decorated ')

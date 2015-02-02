@@ -47,3 +47,15 @@ print 'generator 1', '=', generator_1
 print 'generator 2', '=', generator_2
 print 'iterator 1', '=', iterator_1
 print 'iterator 2', '=', iterator_2
+
+
+
+
+l = [1,2,3,4,5,6,7,8,9,10]
+
+def gen():
+    for item in l:
+        yield item
+
+for item in gen():
+    print item

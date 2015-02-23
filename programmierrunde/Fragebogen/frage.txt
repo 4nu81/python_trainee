@@ -1,0 +1,7 @@
+das ist frage 1?
+*ja
+nein
+frage 2?
+x
+y
+z

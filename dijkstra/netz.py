@@ -64,17 +64,34 @@ if __name__ == '__main__':
     n = Netz()
     n.read()
 
-    routes = [
-        ('Frankfurt', 'München'),
-        ('München', 'Frankfurt'),
-        ('Erfurt','Kassel'),
-        ('Augsburg','Stuttgart'),
-    ]
-    for route in routes:
-        trace = n.get_route(route[0], route[1])
-        print "\nRoute {start} -> {ende}".format(start= route[0], ende = route[1])
-        length = 0
-        for item in trace:
-            print item
-            length += item.wichtung
-        print "Länge: {length}\n".format(length = length)
+    args = sys.argv
+    
+    if len(args) == 3:
+        start = args[1]
+        ende = args[2]
+        if start in knoten and ende in knoten:
+            trace = n.get_route(args[1], args[2])
+            print "\nRoute {start} -> {ende}".format(start= args[1], ende = args[2])
+            length = 0
+            for item in trace:
+                print item
+                length += item.wichtung
+            print "Länge: {length}\n".format(length = length)
+        else:
+            print "Wrong station name"
+    else:
+
+        routes = [
+            ('Frankfurt', 'München'),
+            ('München', 'Frankfurt'),
+            ('Erfurt','Kassel'),
+            ('Augsburg','Stuttgart'),
+        ]
+        for route in routes:
+            trace = n.get_route(route[0], route[1])
+            print "\nRoute {start} -> {ende}".format(start= route[0], ende = route[1])
+            length = 0
+            for item in trace:
+                print item
+                length += item.wichtung
+            print "Länge: {length}\n".format(length = length)

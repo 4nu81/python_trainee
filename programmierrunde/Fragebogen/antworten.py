@@ -1,8 +1,3 @@
-"""
-Anummer, Fb, Pb -> Antwort in PB -> PB
-
-"""
-
 import fileio, ausgabe, cmdlnparser, pruefungsbogen
 import fragebogen as fb_typ
 

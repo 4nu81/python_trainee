@@ -1,10 +1,10 @@
 
-import starten
+import starten, antworten
 import cmdlnparser
 
 commands = {
     'starten' : starten,
-    #'antworten' : antworten.Antworten,
+    'antworten' : antworten,
 }
 
 command = cmdlnparser.cmdln_poll()

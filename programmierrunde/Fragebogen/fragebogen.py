@@ -11,8 +11,8 @@ class Frage:
 class Anwortmgl:
     def __init__(self, text, antwort = False):
         self.text = text
-        self.antwort = False;
-        self.richtige_antwort = antwort
+        self.markiert = False;
+        self.antwort = antwort
         self.nummer = ''
     def __str__(self):
         return self.nummer
@@ -28,6 +28,6 @@ def antworten_markieren(pruefbogen, fragebogen):
     for frage in fragebogen.fragen:
         for antwort in frage.antworten:
             if antwort.nummer in pruefbogen.antworten:
-                antwort.antwort = True;
+                antwort.markiert = True;
             else:
-                antwort.antwort = False;
+                antwort.markiert = False;

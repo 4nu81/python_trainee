@@ -45,3 +45,9 @@ def pruefungsbogen_speichern(pb):
     for nr in pb.antworten:
         f.write(nr + '\n')
     f.close()
+
+def log_schreiben(auswertung):
+    f = open('log', 'a+')
+    line = '{e} - {f} - {a}\n'.format(e=auswertung.email, f=auswertung.dateiname, a=auswertung.ergebnis)
+    f.write(line)
+    f.close()

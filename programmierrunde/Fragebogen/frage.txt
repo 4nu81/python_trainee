@@ -1,7 +1,8 @@
-das ist frage 1?
-*ja
-nein
-frage 2?
-x
-*y
-z
+Welches Tier ist ein Säugetier?
+Ringelnatter
+*Schnabeltier
+Stockente
+Durch welches Gebäude in Greenwich verläuft der Nullmeridian?
+Royal Naval College
+Greenwich Power Station
+*Royal Observatory

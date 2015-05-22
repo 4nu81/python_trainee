@@ -19,3 +19,9 @@ def save(filename, lines):
 	for line in lines:
 		f.write(line + '\n')
 	f.close()
+	
+def text_laden(filename):
+	return textdatei_laden(filename)
+
+def wb_laden(filename):
+	return textdatei_laden(filename)

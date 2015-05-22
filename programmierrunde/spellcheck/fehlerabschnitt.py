@@ -32,6 +32,9 @@ class Fehlerabschnitt():
 		for nr in indizes:
 			result.append(fa.fehlerworte[int(nr)])
 		return result
+	
+	def zeilennummer_erhoehen(self):
+		self.zeilennummer += 1
 
 def fehlerabschnitt_bilden(zeilennummer, fehlerworte, zeilen):
 	global fa

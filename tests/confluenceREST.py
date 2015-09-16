@@ -10,12 +10,13 @@ def get_args():
     namespace = parser.parse_args()
     return {k:v for k,v in vars(namespace).items() if v}
 
-def get_page(pagename, user, password):
+def get_page(pagename, bereich, user, password):
     base_url = "http://rcs-confluence/rest/api/content"
 
     params = {
         'title':pagename,
-        'expand':'body.view'
+        'expand':'body.view',
+        'spaceKey':bereich
     }
 
     url = ''.join([base_url,'/?','&'.join(['{k}={v}'.format(k=k,v=v) for k,v in params.items()])])
@@ -51,15 +52,9 @@ def replace_img_links(html):
 command_line_args = get_args()
 base_url = 'http://rcs-confluence'
 
+def search_content(searchDict):
+    pass
 
-# bei get_page ist das Problem, dass alle Seiten mit dem Namen zurueckgegeben werden.
-pageName = 'Entwicklung'
-content = get_page(pageName, command_line_args['user'], command_line_args['password'])
-content = replace_img_links(content)
-content = content.encode('ascii', 'xmlcharrefreplace')
-content = content.encode('utf-8')
-with open('body.html', 'w') as f:
-    f.write(content)
 
 
 # bei get_page_by_id muss ich hingegen irgendwie die Id ermitteln.

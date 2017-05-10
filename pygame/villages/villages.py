@@ -67,7 +67,7 @@ class village:
     def status(self):
         while self.food < 0:
             if self.count('person') > 0:
-                self.remove('person')
+                self._remove('person')
                 self.food += 1
             else:
                 return False
@@ -103,7 +103,7 @@ class village:
             spear=self.count('spear'),
             sword=self.count('sword'),
             horse=self.count('horse'),
-            buildings=', '.join(buildings),
+            buildings='farm: {farm}, manufacture {manufacture}'.format(farm=buildings.count('farm'), manufacture=buildings.count('manufacture')),
             bf = self.food_balance,
             bg = self.gold_balance,
         )
